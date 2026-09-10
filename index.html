@@ -37,10 +37,7 @@
   <div class="ar-container">
 
     <a-scene
-      mindar-image="
-        imageTargetSrc:
-        ./targets/natal.mind;
-      "
+      mindar-image="imageTargetSrc: ./targets/natal.mind;"
       embedded
       color-space="sRGB"
       renderer="colorManagement: true, physicallyCorrectLights"
@@ -48,22 +45,7 @@
       device-orientation-permission-ui="enabled: false"
     >
 
-      <a-assets>
-
-        <img
-          id="card"
-          src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.1.4/examples/image-tracking/assets/card-example/card.png"
-        >
-
-        <a-asset-item
-          id="avatarModel"
-          src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.1.4/examples/image-tracking/assets/card-example/softmind/scene.gltf"
-        >
-        </a-asset-item>
-
-      </a-assets>
-
-
+      <!-- CÂMERA -->
       <a-camera
         position="0 0 0"
         look-controls="enabled: false"
@@ -71,22 +53,139 @@
       </a-camera>
 
 
+      <!-- NOSSO TARGET -->
       <a-entity mindar-image-target="targetIndex: 0">
 
-        <a-gltf-model
-          src="#avatarModel"
-          position="0 0 0.1"
-          scale="0.005 0.005 0.005"
+
+        <!-- CORPO DO DUENDE -->
+        <a-cylinder
+          position="0 0.35 0"
+          radius="0.22"
+          height="0.55"
+          color="#2f7d4a"
+          animation="
+            property: rotation;
+            to: 0 0 8;
+            dur: 900;
+            easing: easeInOutQuad;
+            loop: true;
+            dir: alternate
+          "
+        >
+        </a-cylinder>
+
+
+        <!-- CABEÇA -->
+        <a-sphere
+          position="0 0.78 0"
+          radius="0.20"
+          color="#f2b28d"
+        >
+        </a-sphere>
+
+
+        <!-- GORRO -->
+        <a-cone
+          position="0 1.08 0"
+          radius-bottom="0.23"
+          radius-top="0"
+          height="0.48"
+          color="#c62828"
+          animation="
+            property: rotation;
+            to: 0 0 10;
+            dur: 900;
+            easing: easeInOutQuad;
+            loop: true;
+            dir: alternate
+          "
+        >
+        </a-cone>
+
+
+        <!-- PONTA BRANCA DO GORRO -->
+        <a-sphere
+          position="0 1.32 0"
+          radius="0.06"
+          color="#ffffff"
+        >
+        </a-sphere>
+
+
+        <!-- OLHO ESQUERDO -->
+        <a-sphere
+          position="-0.075 0.82 0.18"
+          radius="0.025"
+          color="#111111"
+        >
+        </a-sphere>
+
+
+        <!-- OLHO DIREITO -->
+        <a-sphere
+          position="0.075 0.82 0.18"
+          radius="0.025"
+          color="#111111"
+        >
+        </a-sphere>
+
+
+        <!-- BRAÇO ESQUERDO -->
+        <a-cylinder
+          position="-0.27 0.43 0"
+          radius="0.055"
+          height="0.35"
+          color="#2f7d4a"
+          rotation="0 0 55"
+          animation="
+            property: rotation;
+            to: 0 0 75;
+            dur: 700;
+            easing: easeInOutQuad;
+            loop: true;
+            dir: alternate
+          "
+        >
+        </a-cylinder>
+
+
+        <!-- BRAÇO DIREITO -->
+        <a-cylinder
+          position="0.27 0.43 0"
+          radius="0.055"
+          height="0.35"
+          color="#2f7d4a"
+          rotation="0 0 -55"
+          animation="
+            property: rotation;
+            to: 0 0 -75;
+            dur: 700;
+            easing: easeInOutQuad;
+            loop: true;
+            dir: alternate
+          "
+        >
+        </a-cylinder>
+
+
+        <!-- PRESENTE -->
+        <a-box
+          position="0 -0.05 0"
+          width="0.30"
+          height="0.25"
+          depth="0.25"
+          color="#d62828"
           animation="
             property: position;
-            to: 0 0.1 0.1;
+            to: 0 0.03 0;
             dur: 1000;
             easing: easeInOutQuad;
             loop: true;
             dir: alternate
           "
         >
-        </a-gltf-model>
+        </a-box>
+
 
       </a-entity>
 
