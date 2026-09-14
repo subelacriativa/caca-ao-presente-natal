@@ -39,12 +39,17 @@
   <div class="ar-container">
 
     <a-scene
-      mindar-image="imageTargetSrc: ./targets/natal.mind; filterMinCF: 0.01; filterBeta: 1000;"
-      embedded
-      color-space="sRGB"
-      renderer="colorManagement: true, physicallyCorrectLights"
-      vr-mode-ui="enabled: false"
-      device-orientation-permission-ui="enabled: false"
+      
+     mindar-image="
+    imageTargetSrc: ./targets/natal.mind;
+    filterMinCF: 0.001;
+    filterBeta: 0.01;
+  "
+  embedded
+  color-space="sRGB"
+  renderer="colorManagement: true, physicallyCorrectLights"
+  vr-mode-ui="enabled: false"
+  device-orientation-permission-ui="enabled: false"
     >
 
       <!-- MODELO 3D DO DUENDE -->
