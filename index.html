@@ -15,8 +15,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 
-  <script src="https://cdn.jsdelivr.net/gh/matthewbryancurtis/aframe-extras@7.5.0/dist/aframe-extras.min.js"></script>
-
   <style>
     html,
     body {
@@ -32,6 +30,97 @@
       height: 100%;
     }
   </style>
+
+  <script>
+  AFRAME.registerComponent('play-gltf-animation', {
+
+    schema: {
+      clip: {
+        type: 'string',
+        default: 'ElfArmature|Idle'
+      },
+      timeScale: {
+        type: 'number',
+        default: 1
+      }
+    },
+
+    init: function () {
+
+      this.mixer = null;
+      this.action = null;
+
+      this.el.addEventListener('model-loaded', () => {
+
+        const modelComponent = this.el.components['gltf-model'];
+        const model = modelComponent.model;
+
+        if (!model) {
+          console.error('Modelo GLB não encontrado.');
+          return;
+        }
+
+        const animations = model.animations || [];
+
+        console.log(
+          'Animações encontradas:',
+          animations.map(animation => animation.name)
+        );
+
+        if (animations.length === 0) {
+          console.error('Nenhuma animação encontrada no GLB.');
+          return;
+        }
+
+        this.mixer = new THREE.AnimationMixer(model);
+
+        const clip = THREE.AnimationClip.findByName(
+          animations,
+          this.data.clip
+        );
+
+        if (!clip) {
+          console.error(
+            'Animação não encontrada:',
+            this.data.clip
+          );
+          return;
+        }
+
+        console.log(
+          'Reproduzindo animação:',
+          clip.name,
+          'duração:',
+          clip.duration
+        );
+
+        this.action = this.mixer.clipAction(clip);
+
+        this.action.setLoop(
+          THREE.LoopRepeat,
+          Infinity
+        );
+
+        this.action.setEffectiveTimeScale(
+          this.data.timeScale
+        );
+
+        this.action.play();
+      });
+    },
+
+    tick: function (time, deltaTime) {
+
+      if (!this.mixer) {
+        return;
+      }
+
+      this.mixer.update(deltaTime / 1000);
+    }
+
+  });
+</script>
+  
 </head>
 
 <body>
@@ -75,11 +164,11 @@
       <a-entity mindar-image-target="targetIndex: 0">
 
         <!-- DUENDE 3D -->
-       <a-gltf-model
+      <a-gltf-model
         src="#duende"
         position="0 0 0.1"
         scale="0.00008 0.00008 0.00008"
-        animation-mixer="clip: *; loop: repeat; timeScale: 1">
+        play-gltf-animation="clip: ElfArmature|Idle; timeScale: 1">
       </a-gltf-model>
 
       </a-entity>
