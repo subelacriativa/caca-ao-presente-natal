@@ -32,93 +32,84 @@
   </style>
 
   <script>
-  AFRAME.registerComponent('play-gltf-animation', {
+AFRAME.registerComponent('play-animation', {
 
-    schema: {
-      clip: {
-        type: 'string',
-        default: 'ElfArmature|Idle'
-      },
-      timeScale: {
-        type: 'number',
-        default: 1
-      }
-    },
+  init: function () {
 
-    init: function () {
+    this.mixer = null;
 
-      this.mixer = null;
-      this.action = null;
+    this.el.addEventListener('model-loaded', (event) => {
 
-      this.el.addEventListener('model-loaded', () => {
+      const model = event.detail.model;
 
-        const modelComponent = this.el.components['gltf-model'];
-        const model = modelComponent.model;
+      console.log("MODELO CARREGADO NO AR");
 
-        if (!model) {
-          console.error('Modelo GLB não encontrado.');
-          return;
-        }
+      const animations = model.animations || [];
 
-        const animations = model.animations || [];
+      console.log(
+        "ANIMAÇÕES:",
+        animations.map(a => a.name)
+      );
 
-        console.log(
-          'Animações encontradas:',
-          animations.map(animation => animation.name)
-        );
-
-        if (animations.length === 0) {
-          console.error('Nenhuma animação encontrada no GLB.');
-          return;
-        }
-
-        this.mixer = new THREE.AnimationMixer(model);
-
-        const clip = THREE.AnimationClip.findByName(
-          animations,
-          this.data.clip
-        );
-
-        if (!clip) {
-          console.error(
-            'Animação não encontrada:',
-            this.data.clip
-          );
-          return;
-        }
-
-        console.log(
-          'Reproduzindo animação:',
-          clip.name,
-          'duração:',
-          clip.duration
-        );
-
-        this.action = this.mixer.clipAction(clip);
-
-        this.action.setLoop(
-          THREE.LoopRepeat,
-          Infinity
-        );
-
-        this.action.setEffectiveTimeScale(
-          this.data.timeScale
-        );
-
-        this.action.play();
-      });
-    },
-
-    tick: function (time, deltaTime) {
-
-      if (!this.mixer) {
+      if (animations.length === 0) {
+        console.error("NENHUMA ANIMAÇÃO ENCONTRADA!");
         return;
       }
 
-      this.mixer.update(deltaTime / 1000);
+      this.mixer =
+        new THREE.AnimationMixer(model);
+
+      const clip =
+        animations.find(
+          animation =>
+            animation.name === "ElfArmature|Idle"
+        );
+
+      if (!clip) {
+
+        console.error(
+          "Idle não encontrado!"
+        );
+
+        return;
+      }
+
+      console.log(
+        "TOCANDO:",
+        clip.name
+      );
+
+      const action =
+        this.mixer.clipAction(
+          clip,
+          model
+        );
+
+      action.setLoop(
+        THREE.LoopRepeat,
+        Infinity
+      );
+
+      action.play();
+
+      console.log(
+        "ANIMAÇÃO INICIADA!"
+      );
+    });
+  },
+
+  tick: function (time, deltaTime) {
+
+    if (!this.mixer) {
+      return;
     }
 
-  });
+    this.mixer.update(
+      deltaTime / 1000
+    );
+  }
+
+});
 </script>
   
 </head>
@@ -164,12 +155,12 @@
       <a-entity mindar-image-target="targetIndex: 0">
 
         <!-- DUENDE 3D -->
-      <a-gltf-model
-        src="#duende"
-        position="0 0 0.1"
-        scale="0.00008 0.00008 0.00008"
-        play-gltf-animation="clip: ElfArmature|Idle; timeScale: 1">
-      </a-gltf-model>
+     <a-gltf-model
+      src="#duende"
+      position="0 0 0.1"
+      scale="0.00008 0.00008 0.00008"
+      play-animation>
+    </a-gltf-model>
 
       </a-entity>
 
