@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+  <title>Teste do Duende</title>
+
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+
+  <script>
+    AFRAME.registerComponent('play-animation', {
+
+      init: function () {
+
+        this.mixer = null;
+
+        this.el.addEventListener('model-loaded', (event) => {
+
+          const model = event.detail.model;
+
+          console.log("MODELO CARREGADO");
+          console.log("Modelo:", model);
+
+          const animations = model.animations || [];
+
+          console.log(
+            "ANIMAÇÕES:",
+            animations.map(a => a.name)
+          );
+
+          if (animations.length === 0) {
+
+            console.error("NENHUMA ANIMAÇÃO ENCONTRADA!");
+
+            return;
+          }
+
+          this.mixer =
+            new THREE.AnimationMixer(model);
+
+          const clip =
+            animations.find(
+              animation =>
+                animation.name === "ElfArmature|Idle"
+            );
+
+          if (!clip) {
+
+            console.error(
+              "Idle não encontrado!"
+            );
+
+            return;
+          }
+
+          console.log(
+            "TOCANDO:",
+            clip.name
+          );
+
+          console.log(
+            "DURAÇÃO:",
+            clip.duration
+          );
+
+          const action =
+            this.mixer.clipAction(
+              clip,
+              model
+            );
+
+          action.setLoop(
+            THREE.LoopRepeat,
+            Infinity
+          );
+
+          action.play();
+
+          console.log(
+            "ANIMAÇÃO INICIADA!"
+          );
+        });
+      },
+
+      tick: function (time, deltaTime) {
+
+        if (!this.mixer) {
+          return;
+        }
+
+        this.mixer.update(
+          deltaTime / 1000
+        );
+      }
+
+    });
+  </script>
+
+</head>
+
+
+<body>
+
+  <a-scene>
+
+    <a-assets>
+
+      <a-asset-item
+        id="duende"
+        src="./assets/models/duende.glb">
+      </a-asset-item>
+
+    </a-assets>
+
+
+    <a-entity
+      gltf-model="#duende"
+      play-animation
+      position="0 0 -3"
+      scale="0.00008 0.00008 0.00008">
+    </a-entity>
+
+
+    <a-camera
+      position="0 1.6 0">
+    </a-camera>
+
+  </a-scene>
+
+</body>
+
+</html>
